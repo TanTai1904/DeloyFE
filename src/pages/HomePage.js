@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import CategoryList from '../components/HomePage/CategoryList';
 import ArticleList from '../components/HomePage/ArticleList';
 
-console.log('API URL:', process.env.REACT_APP_API_URL);
 const API_URL = `${process.env.REACT_APP_API_URL}/api`;
 
 const HomePage = () => {
@@ -24,12 +23,16 @@ const HomePage = () => {
         const categoriesData = categoriesResponse.data?.data || [];
         const articlesData = articlesResponse.data?.data || [];
 
-        // Filter out inactive articles
+        // Filter out inactive categories and articles
+        const activeCategories = Array.isArray(categoriesData)
+          ? categoriesData.filter(category => category.isActive === true)
+          : [];
+          
         const activeArticles = Array.isArray(articlesData) 
           ? articlesData.filter(article => article.isActive === true)
           : [];
 
-        setCategories(Array.isArray(categoriesData) ? categoriesData : []);
+        setCategories(activeCategories);
         setArticles(activeArticles);
         setLoading(false);
       } catch (err) {
