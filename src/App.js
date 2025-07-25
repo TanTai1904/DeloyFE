@@ -38,6 +38,7 @@ import ManagerPage from './pages/admin/managerPage';
 import CreateManager from './pages/admin/createManager';
 import UpdateManager from './pages/admin/updateManager';
 import StatisticsDashboard from './pages/admin/StatisticsDashboard';
+import PatientListAdmin from './pages/admin/PatientListAdmin';
 import DoctorStatisticsDashboard from './pages/doctor/StatisticsDashboard';
 import StaffStatisticsDashboard from './pages/staff/StatisticsDashboard';
 import ManagerStatisticsDashboard from './pages/manager/StatisticsDashboard';
@@ -459,6 +460,14 @@ function App() {
                         element={
                           <PrivateRoute>
                             <StatisticsDashboard />
+                          </PrivateRoute>
+                        }
+                      />
+                      <Route
+                        path="/admin/patients"
+                        element={
+                          <PrivateRoute>
+                            <PatientListAdmin />
                           </PrivateRoute>
                         }
                       />

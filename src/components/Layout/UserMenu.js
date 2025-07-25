@@ -118,7 +118,6 @@ const UserMenu = ({ user, onLogout }) => {
               to="/categories"
               className="block px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600"
               onClick={() => setIsOpen(false)}
-              sty
             >
               Quản lý danh mục bài viết
             </Link>
@@ -175,6 +174,15 @@ const UserMenu = ({ user, onLogout }) => {
               onClick={() => setIsOpen(false)}
             >
               Quản lý bác sĩ
+            </Link>
+          )}
+          {user?.userRole === 'Admin' && (
+            <Link
+              to="/admin/patients"
+              className="block px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600"
+              onClick={() => setIsOpen(false)}
+            >
+              Xem danh sách bệnh nhân
             </Link>
           )}
           {user?.userRole === 'Admin' && (
