@@ -28,9 +28,31 @@ const RegisterPage = () => {
     }));
   };
 
+  const validatePhone = (phone) => {
+    // Số điện thoại Việt Nam: 10 số, bắt đầu bằng 0
+    return /^0\d{9}$/.test(phone);
+  };
+
+  const validatePassword = (password) => {
+    // Tối thiểu 8 ký tự, có chữ hoa, chữ thường, số, ký tự đặc biệt
+    return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=]).{8,}$/.test(password);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+
+    // Validate số điện thoại
+    if (formData.phoneNumber && !validatePhone(formData.phoneNumber)) {
+      setError('Số điện thoại không hợp lệ. Vui lòng nhập đúng định dạng số Việt Nam.');
+      return;
+    }
+    // Validate mật khẩu
+    if (formData.password && !validatePassword(formData.password)) {
+      setError('Mật khẩu phải tối thiểu 8 ký tự, gồm chữ hoa, chữ thường, số và ký tự đặc biệt.');
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -291,9 +313,11 @@ const RegisterPage = () => {
               </div>
             </div>
 
+
             {error && (
               <div className="text-red-600 text-sm text-center bg-red-50 p-3 rounded-md">
                 {error}
+
               </div>
             )}
 
@@ -301,9 +325,8 @@ const RegisterPage = () => {
               <button
                 type="submit"
                 disabled={loading}
-                className={`w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transform transition-all duration-200 ${
-                  loading ? 'opacity-75 cursor-not-allowed' : 'hover:-translate-y-0.5'
-                }`}
+                className={`w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gradient-to-r from-red-600 to-red-500 hover:from-red-700 hover:to-red-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transform transition-all duration-200 ${loading ? 'opacity-75 cursor-not-allowed' : 'hover:-translate-y-0.5'
+                  }`}
               >
                 {loading ? (
                   <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -339,4 +362,4 @@ const RegisterPage = () => {
   );
 };
 
-export default RegisterPage; 
+export default RegisterPage;

@@ -296,6 +296,43 @@ const UserMenu = ({ user, onLogout }) => {
               Quản lý loại khám
             </Link>
           )}
+          {/* Thống kê */}
+          {user?.userRole === 'Admin' && (
+            <Link
+              to="/admin/statistics"
+              className="block px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600"
+              onClick={() => setIsOpen(false)}
+            >
+              Thống kê hệ thống
+            </Link>
+          )}
+          {user?.userRole === 'Doctor' && (
+            <Link
+              to="/doctor/statistics"
+              className="block px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600"
+              onClick={() => setIsOpen(false)}
+            >
+              Thống kê bác sĩ
+            </Link>
+          )}
+          {user?.userRole === 'Staff' && (
+            <Link
+              to="/staff/statistics"
+              className="block px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600"
+              onClick={() => setIsOpen(false)}
+            >
+              Thống kê nhân viên
+            </Link>
+          )}
+          {user?.userRole === 'Manager' && (
+            <Link
+              to="/manager/statistics"
+              className="block px-4 py-2 text-sm text-gray-700 hover:bg-red-50 hover:text-red-600"
+              onClick={() => setIsOpen(false)}
+            >
+              Thống kê quản lý
+            </Link>
+          )}
 
           <button
             onClick={() => {
@@ -312,4 +349,4 @@ const UserMenu = ({ user, onLogout }) => {
   );
 };
 
-export default UserMenu; 
+export default UserMenu;

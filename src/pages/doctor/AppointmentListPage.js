@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { getToken, isTokenExpired, handleUnauthorized } from '../services/authService';
+import { getToken, isTokenExpired, handleUnauthorized } from '../../services/authService';
 import { toast } from 'react-toastify';
 import { format } from 'date-fns';
 import { useNavigate } from 'react-router-dom';

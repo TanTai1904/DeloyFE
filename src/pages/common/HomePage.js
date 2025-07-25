@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
-import CategoryList from '../components/HomePage/CategoryList';
-import ArticleList from '../components/HomePage/ArticleList';
+import CategoryList from '../../components/HomePage/CategoryList';
+import ArticleList from '../../components/HomePage/ArticleList';
 
 const API_URL = `${process.env.REACT_APP_API_URL}/api`;
 
@@ -74,7 +74,7 @@ const HomePage = () => {
           </p>
           <div className="flex justify-center gap-6">
             <Link 
-              to="/#" 
+              to="/learn-more" 
               className="border-2 border-white text-white px-8 py-3 rounded-full font-semibold hover:bg-white hover:text-red-600 transition duration-300"
             >
               Tìm hiểu thêm
@@ -138,10 +138,13 @@ const HomePage = () => {
           <h2 className="text-3xl font-bold mb-4">Bạn cần hỗ trợ?</h2>
           <p className="text-xl mb-8">Đội ngũ bác sĩ của chúng tôi luôn sẵn sàng giúp đỡ bạn</p>
           <Link
-            to="/contact"
-            className="bg-white text-red-600 px-8 py-3 rounded-full font-semibold hover:bg-gray-100 transition-colors"
+            to="/contact-info"
+            className="bg-white text-red-600 px-8 py-6 rounded-lg font-semibold shadow-md inline-block hover:bg-gray-100 transition-colors"
           >
-            Liên hệ ngay
+            <div className="mb-2">
+              <span className="font-bold">Liên hệ ngay</span>
+            </div>
+            <div className="text-sm text-gray-600">Nhấn để xem thông tin liên hệ</div>
           </Link>
         </div>
       </section>
@@ -149,4 +152,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage; 
+export default HomePage;

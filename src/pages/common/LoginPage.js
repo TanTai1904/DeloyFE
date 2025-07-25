@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../../contexts/AuthContext';
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -46,11 +46,23 @@ const LoginPage = () => {
     }));
   };
 
+  const validatePassword = (password) => {
+    // Tối thiểu 8 ký tự, có chữ hoa, chữ thường, số, ký tự đặc biệt
+    return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=]).{8,}$/.test(password);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    setLoading(true);
 
+    // Nếu là tài khoản thuộc 5 role mặc định thì bỏ qua kiểm tra regex mật khẩu
+    const presetRoles = ['admin', 'doctor', 'patient', 'staff', 'manager'];
+    const isPresetAccount = presetRoles.some(role => formData.username.toLowerCase().includes(role));
+    if (!isPresetAccount && formData.password && !validatePassword(formData.password)) {
+      setError('Mật khẩu phải tối thiểu 8 ký tự, gồm chữ hoa, chữ thường, số và ký tự đặc biệt.');
+      return;
+    }
+    setLoading(true);
     try {
       await login(formData.username, formData.password);
       // Không cần navigate ở đây vì useEffect sẽ xử lý

@@ -1,62 +1,70 @@
+
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import HomePage from './pages/HomePage';
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
-import VerifyPage from './pages/VerifyPage';
-import ProfilePage from './pages/ProfilePage';
-import AppointmentsPage from './pages/AppointmentsPage';
-import AppointmentListPage from './pages/AppointmentListPage';
-import UpdateAppointmentPage from './pages/updateAppointmentPage';
-import AppointmentManager from './pages/AppointmentManager';
-import TestResultPage from './pages/testResultPage';
-import CategoryManager from './pages/categoryManager';
-import CreateCategory from './pages/createCategory';
-import UpdateCategory from './pages/updateCategory';
-import TestsPage from './pages/TestsPage';
-import ArticleManager from './pages/articleManager';
-import CreateTreatment from './pages/createTreatment';
-import StandardProtocol from './pages/standardProtocol';
-import ArticleDetail from './pages/articleDetail';
-import CreateArticle from './pages/createArticle';
-import UpdateArticle from './pages/updateArticle';
-import CreateRegimens from './pages/createRegimens';
-import ChooseRegiment from './pages/chooseRegiment';
-import ArticlesPage from './pages/ArticlesPage';
-import CategoryPage from './pages/CategoryPage';
-import UpdateCertificate from './pages/updateCertificate';
-import CertificateManagement from './pages/certificateManagement';
-import CreateCertificate from './pages/createCertificate';
-import ARVComponentManager from './pages/arvComponentManager';
-import UpdateARVComponent from './pages/updateARVComponent';
+import HomePage from './pages/common/HomePage';
+import LoginPage from './pages/common/LoginPage';
+import RegisterPage from './pages/common/RegisterPage';
+import VerifyPage from './pages/common/VerifyPage';
+import ProfilePage from './pages/common/ProfilePage';
+import AppointmentsPage from './pages/appointment/AppointmentsPage';
+import AppointmentListPage from './pages/doctor/AppointmentListPage';
+import UpdateAppointmentPage from './pages/appointment/updateAppointmentPage';
+import AppointmentManager from './pages/doctor/AppointmentManager';
+import TestResultPage from './pages/patient/testResultPage';
+import CategoryManager from './pages/manager/categoryManager';
+import CreateCategory from './pages/manager/createCategory';
+import UpdateCategory from './pages/manager/updateCategory';
+import TestsPage from './pages/common/TestsPage';
+import ArticleManager from './pages/article/articleManager';
+import CreateTreatment from './pages/doctor/createTreatment';
+import StandardProtocol from './pages/common/standardProtocol';
+import ArticleDetail from './pages/common/articleDetail';
+import CreateArticle from './pages/article/createArticle';
+import UpdateArticle from './pages/article/updateArticle';
+import CreateRegimens from './pages/manager/createRegimens';
+import ChooseRegiment from './pages/manager/chooseRegiment';
+import ArticlesPage from './pages/common/ArticlesPage';
+import CategoryPage from './pages/common/CategoryPage';
+import UpdateCertificate from './pages/admin/updateCertificate';
+import CertificateManagement from './pages/admin/certificateManagement';
+import CreateCertificate from './pages/admin/createCertificate';
+import ARVComponentManager from './pages/manager/arvComponentManager';
+import UpdateARVComponent from './pages/manager/updateARVComponent';
+import CreateComponent from './pages/manager/createComponent';
+import TestTypeManager from './pages/test/testTypeManager';
+import CreateTestType from './pages/test/createTestType';
+import UpdateTestType from './pages/test/updateTestType';
+import ManagerPage from './pages/admin/managerPage';
+import CreateManager from './pages/admin/createManager';
+import UpdateManager from './pages/admin/updateManager';
+import StatisticsDashboard from './pages/admin/StatisticsDashboard';
+import DoctorStatisticsDashboard from './pages/doctor/StatisticsDashboard';
+import StaffStatisticsDashboard from './pages/staff/StatisticsDashboard';
+import ManagerStatisticsDashboard from './pages/manager/StatisticsDashboard';
+import DoctorManager from './pages/doctor/doctormanager';
+import CreateDoctor from './pages/doctor/createDoctor';
+import UpdateDoctor from './pages/doctor/updateDoctor';
+import StaffManager from './pages/staff/staffManager';
+import CreateStaff from './pages/staff/createStaff';
+import UpdateStaff from './pages/staff/updateStaff';
+import TestResultManager from './pages/test/testResultManager';
+import UpdateTestResult from './pages/test/updateTestResult';
+import TreatmentForPatient from './pages/doctor/treatmentForPatient';
+import TestResultForPatient from './pages/doctor/testResultForPatient';
+import ScheduleManager from './pages/doctor/scheduleManager';
+import CreateSchedule from './pages/manager/createSchedule';
+import UpdateSchedule from './pages/manager/updateSchedule';
+import ViewListWorkSchedule from './pages/doctor/viewListWorkSchedule';
 import PrivateRoute from './components/PrivateRoute';
 import Header from './components/Layout/Header';
 import Footer from './components/Layout/Footer';
+import ForgetPassword from './pages/password/forgetPassword';
 import { AuthProvider } from './contexts/AuthContext';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import './App.css';
-import CreateComponent from './pages/createComponent';
-import TestTypeManager from './pages/testTypeManager';
-import CreateTestType from './pages/createTestType';
-import UpdateTestType from './pages/updateTestType';
-import ManagerPage from './pages/managerPage';
-import CreateManager from './pages/createManager';
-import UpdateManager from './pages/updateManager';
-import DoctorManager from './pages/doctormanager';
-import CreateDoctor from './pages/createDoctor';
-import UpdateDoctor from './pages/updateDoctor';
-import StaffManager from './pages/staffManager';
-import CreateStaff from './pages/createStaff';
-import UpdateStaff from './pages/updateStaff';
-import TestResultManager from './pages/testResultManager';
-import UpdateTestResult from './pages/updateTestResult';
-import TreatmentForPatient from './pages/treatmentForPatient';
-import TestResultForPatient from './pages/testResultForPatient';
-import ScheduleManager from './pages/scheduleManager';
-import CreateSchedule from './pages/createSchedule';
-import UpdateSchedule from './pages/updateSchedule';
-import ViewListWorkSchedule from './pages/viewListWorkSchedule';
+import LearnMorePage from './pages/common/LearnMorePage';
+import ContactInfo from './pages/common/ContactInfo';
 
 function App() {
   return (
@@ -68,6 +76,9 @@ function App() {
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/verify" element={<VerifyPage />} />
+            <Route path="/contact-info" element={<ContactInfo />} />
+            <Route path="/learn-more" element={<LearnMorePage />} />
+            <Route path="/forgot-password" element={<ForgetPassword />} />
 
             {/* Routes with layout */}
             <Route
@@ -440,6 +451,38 @@ function App() {
                         element={
                           <PrivateRoute>
                             <ViewListWorkSchedule />
+                          </PrivateRoute>
+                        }
+                      />
+                      <Route
+                        path="/admin/statistics"
+                        element={
+                          <PrivateRoute>
+                            <StatisticsDashboard />
+                          </PrivateRoute>
+                        }
+                      />
+                      <Route
+                        path="/doctor/statistics"
+                        element={
+                          <PrivateRoute>
+                            <DoctorStatisticsDashboard />
+                          </PrivateRoute>
+                        }
+                      />
+                      <Route
+                        path="/staff/statistics"
+                        element={
+                          <PrivateRoute>
+                            <StaffStatisticsDashboard />
+                          </PrivateRoute>
+                        }
+                      />
+                      <Route
+                        path="/manager/statistics"
+                        element={
+                          <PrivateRoute>
+                            <ManagerStatisticsDashboard />
                           </PrivateRoute>
                         }
                       />

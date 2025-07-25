@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { getToken, isTokenExpired, handleUnauthorized, getUserRole, getUserDetails } from '../services/authService';
+import { getToken, isTokenExpired, handleUnauthorized, getUserRole, getUserDetails } from '../../services/authService';
 import { toast } from 'react-toastify';
 
 const AppointmentsPage = () => {
@@ -178,8 +178,8 @@ const AppointmentsPage = () => {
       }
 
       const userDetails = getUserDetails();
-      if (!userDetails || !userDetails.userId) {
-        toast.error('Không thể lấy thông tin người dùng. Vui lòng đăng nhập lại.');
+      if (!userDetails || !userDetails.patientId) {
+        toast.error('Không thể lấy thông tin bệnh nhân. Vui lòng đăng nhập lại.');
         navigate('/login');
         return;
       }
@@ -194,7 +194,7 @@ const AppointmentsPage = () => {
       }
 
       const appointmentData = {
-        patientId: parseInt(userDetails.userId),
+        patientId: parseInt(userDetails.patientId),
         doctorId: parseInt(selectedDoctor),
         appointmentDate: formattedDate,
         appointmentTime: formattedTime,

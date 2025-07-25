@@ -33,11 +33,7 @@ const Footer = () => {
                   Đặt lịch hẹn
                 </Link>
               </li>
-              <li>
-                <Link to="/contact" className="text-gray-400 hover:text-red-500 transition-colors">
-                  Liên hệ
-                </Link>
-              </li>
+              {/* Đã xóa liên kết đến trang liên hệ */}
             </ul>
           </div>
 
