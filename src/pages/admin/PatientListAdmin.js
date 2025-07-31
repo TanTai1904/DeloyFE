@@ -16,7 +16,9 @@ const PatientListAdmin = () => {
             Authorization: `Bearer ${token}`,
           },
         });
-        setPatients(response.data.data);
+        // Lọc chỉ lấy userRole === 'Patient' (phòng trường hợp API trả về cả user khác)
+        const all = response.data.data || [];
+        setPatients(all.filter(p => p.userRole === 'Patient'));
       } catch (err) {
         setError('Không thể tải danh sách bệnh nhân.');
       } finally {
@@ -36,16 +38,16 @@ const PatientListAdmin = () => {
           <div className="text-center text-red-600">{error}</div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-full border border-gray-200 rounded-lg shadow">
+            <table className="min-w-full border border-gray-200 rounded-lg shadow text-center">
               <thead className="bg-gray-100">
                 <tr>
-                  <th className="py-3 px-4 text-left">STT</th>
-                  <th className="py-3 px-4 text-left">Họ tên</th>
-                  <th className="py-3 px-4 text-left">Tên đăng nhập</th>
-                  <th className="py-3 px-4 text-left">Email</th>
-                  <th className="py-3 px-4 text-left">Số điện thoại</th>
-                  <th className="py-3 px-4 text-left">Ngày sinh</th>
-                  <th className="py-3 px-4 text-left">Giới tính</th>
+                  <th className="py-3 px-4">STT</th>
+                  <th className="py-3 px-4">Họ tên</th>
+                  <th className="py-3 px-4">Tên đăng nhập</th>
+                  <th className="py-3 px-4">Email</th>
+                  <th className="py-3 px-4">Số điện thoại</th>
+                  <th className="py-3 px-4">Ngày sinh</th>
+                  <th className="py-3 px-4">Giới tính</th>
                 </tr>
               </thead>
               <tbody>

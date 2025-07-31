@@ -13,42 +13,97 @@ import {
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const StatisticsDashboard = () => {
-  const [stats] = useState({
-    totalSchedules: 0,
+  const [stats, setStats] = useState({
     totalArticles: 0,
     totalPrescriptions: 0,
     totalProtocols: 0,
-    totalPatients: 0,
-    totalDoctors: 0,
+    totalTestTypes: 0,
+    totalTestResults: 0,
+    totalARVComponents: 0,
+    totalPatientAccounts: 0,
+    totalDoctorAccounts: 0,
   });
+
+  React.useEffect(() => {
+    const API_URL = process.env.REACT_APP_API_URL;
+    const token = localStorage.getItem('token');
+    const headers = { Authorization: `Bearer ${token}` };
+
+    // Bài viết
+    fetch(`${API_URL}/api/Article/GetAll`, { headers })
+      .then(res => res.json())
+      .then(res => setStats(prev => ({ ...prev, totalArticles: res.data?.length || 0 })))
+      .catch(() => {});
+    // Đơn thuốc
+    fetch(`${API_URL}/api/Treatment/GetAll`, { headers })
+      .then(res => res.json())
+      .then(res => setStats(prev => ({ ...prev, totalPrescriptions: res.data?.length || 0 })))
+      .catch(() => {});
+    // Phác đồ
+    fetch(`${API_URL}/api/ARVRegimens/GetAll`, { headers })
+      .then(res => res.json())
+      .then(res => setStats(prev => ({ ...prev, totalProtocols: res.data?.length || 0 })))
+      .catch(() => {});
+    // Loại xét nghiệm
+    fetch(`${API_URL}/api/TestType/GetAll`, { headers })
+      .then(res => res.json())
+      .then(res => setStats(prev => ({ ...prev, totalTestTypes: res.data?.length || 0 })))
+      .catch(() => {});
+    // Kết quả xét nghiệm
+    fetch(`${API_URL}/api/TestResult/GetAll`, { headers })
+      .then(res => res.json())
+      .then(res => setStats(prev => ({ ...prev, totalTestResults: res.data?.length || 0 })))
+      .catch(() => {});
+    // Thành phần ARV
+    fetch(`${API_URL}/api/ARVComponents/GetAll`, { headers })
+      .then(res => res.json())
+      .then(res => setStats(prev => ({ ...prev, totalARVComponents: res.data?.length || 0 })))
+      .catch(() => {});
+    // Tài khoản bệnh nhân
+    fetch(`${API_URL}/api/Patient/GetAll`, { headers })
+      .then(res => res.json())
+      .then(res => setStats(prev => ({ ...prev, totalPatientAccounts: res.data?.length || 0 })))
+      .catch(() => {});
+    // Tài khoản bác sĩ
+    fetch(`${API_URL}/api/Doctor/GetAll`, { headers })
+      .then(res => res.json())
+      .then(res => setStats(prev => ({ ...prev, totalDoctorAccounts: res.data?.length || 0 })))
+      .catch(() => {});
+  }, []);
 
   const chartData = {
     labels: [
-      'Số lượng lịch khám',
       'Số lượng bài viết',
       'Số lượng đơn thuốc',
       'Số lượng phác đồ',
-      'Số lượng bệnh nhân',
-      'Số lượng bác sĩ',
+      'Số loại xét nghiệm',
+      'Số lượng kết quả xét nghiệm',
+      'Số lượng thành phần ARV',
+      'Tài khoản bệnh nhân',
+      'Tài khoản bác sĩ',
     ],
     datasets: [
       {
         label: 'Số liệu',
         data: [
-          stats.totalSchedules,
           stats.totalArticles,
           stats.totalPrescriptions,
           stats.totalProtocols,
-          stats.totalPatients,
-          stats.totalDoctors,
+          stats.totalTestTypes,
+          stats.totalTestResults,
+          stats.totalARVComponents,
+          stats.totalPatientAccounts,
+          stats.totalDoctorAccounts,
         ],
         backgroundColor: [
-          'rgba(59,130,246,0.7)', // blue
           'rgba(16,185,129,0.7)', // green
           'rgba(250,204,21,0.7)', // yellow
           'rgba(107,114,128,0.7)', // gray
+          'rgba(59,130,246,0.7)', // blue
           'rgba(239,68,68,0.7)', // red
           'rgba(190,24,93,0.7)', // pink
+          'rgba(34,197,94,0.7)', // emerald
+          'rgba(168,85,247,0.7)', // purple
         ],
         borderRadius: 8,
         borderWidth: 1,
@@ -84,69 +139,53 @@ const StatisticsDashboard = () => {
         <div className="mb-8">
           <Bar data={chartData} options={chartOptions} height={220} />
         </div>
-        {/* Bảng số liệu chia 2 cột */}
-        <div className="mb-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Cột 1 */}
-            <div>
-              <table className="w-full border border-gray-200 rounded-lg shadow table-fixed">
-                <colgroup>
-                  <col style={{ width: '60%' }} />
-                  <col style={{ width: '40%' }} />
-                </colgroup>
-                <thead className="bg-gray-100">
-                  <tr>
-                    <th className="py-4 px-8 text-left text-xl font-semibold text-gray-700">Chỉ số</th>
-                    <th className="py-4 px-8 text-center text-xl font-semibold text-gray-700">Số liệu</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="hover:bg-blue-50">
-                    <td className="py-3 px-6 text-left font-medium text-gray-800">Số lượng lịch khám</td>
-                    <td className="py-3 px-6 text-center text-2xl text-blue-600 font-bold">{stats.totalSchedules}</td>
-                  </tr>
-                  <tr className="hover:bg-green-50">
-                    <td className="py-3 px-6 text-left font-medium text-gray-800">Số lượng bài viết</td>
-                    <td className="py-3 px-6 text-center text-2xl text-green-600 font-bold">{stats.totalArticles}</td>
-                  </tr>
-                  <tr className="hover:bg-yellow-50">
-                    <td className="py-3 px-6 text-left font-medium text-gray-800">Số lượng đơn thuốc</td>
-                    <td className="py-3 px-6 text-center text-2xl text-yellow-600 font-bold">{stats.totalPrescriptions}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-            {/* Cột 2 */}
-            <div>
-              <table className="w-full border border-gray-200 rounded-lg shadow table-fixed">
-                <colgroup>
-                  <col style={{ width: '60%' }} />
-                  <col style={{ width: '40%' }} />
-                </colgroup>
-                <thead className="bg-gray-100">
-                  <tr>
-                    <th className="py-4 px-8 text-left text-xl font-semibold text-gray-700">Chỉ số</th>
-                    <th className="py-4 px-8 text-center text-xl font-semibold text-gray-700">Số liệu</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="hover:bg-gray-50">
-                    <td className="py-3 px-6 text-left font-medium text-gray-800">Số lượng phác đồ</td>
-                    <td className="py-3 px-6 text-center text-2xl text-gray-600 font-bold">{stats.totalProtocols}</td>
-                  </tr>
-                  <tr className="hover:bg-red-50">
-                    <td className="py-3 px-6 text-left font-medium text-gray-800">Số lượng bệnh nhân</td>
-                    <td className="py-3 px-6 text-center text-2xl text-red-600 font-bold">{stats.totalPatients}</td>
-                  </tr>
-                  <tr className="hover:bg-pink-50">
-                    <td className="py-3 px-6 text-left font-medium text-gray-800">Số lượng bác sĩ</td>
-                    <td className="py-3 px-6 text-center text-2xl text-pink-600 font-bold">{stats.totalDoctors}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
+        {/* Bảng số liệu */}
+        <table className="w-full border border-gray-200 rounded-lg shadow table-fixed mb-8">
+          <colgroup>
+            <col style={{ width: '60%' }} />
+            <col style={{ width: '40%' }} />
+          </colgroup>
+          <thead className="bg-gray-100">
+            <tr>
+              <th className="py-4 px-8 text-left text-xl font-semibold text-gray-700">Chỉ số</th>
+              <th className="py-4 px-8 text-center text-xl font-semibold text-gray-700">Số liệu</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr className="hover:bg-green-50">
+              <td className="py-3 px-6 text-left font-medium text-gray-800">Số lượng bài viết</td>
+              <td className="py-3 px-6 text-center text-2xl text-green-600 font-bold">{stats.totalArticles}</td>
+            </tr>
+            <tr className="hover:bg-yellow-50">
+              <td className="py-3 px-6 text-left font-medium text-gray-800">Số lượng đơn thuốc</td>
+              <td className="py-3 px-6 text-center text-2xl text-yellow-600 font-bold">{stats.totalPrescriptions}</td>
+            </tr>
+            <tr className="hover:bg-gray-50">
+              <td className="py-3 px-6 text-left font-medium text-gray-800">Số lượng phác đồ</td>
+              <td className="py-3 px-6 text-center text-2xl text-gray-600 font-bold">{stats.totalProtocols}</td>
+            </tr>
+            <tr className="hover:bg-blue-50">
+              <td className="py-3 px-6 text-left font-medium text-gray-800">Số loại xét nghiệm</td>
+              <td className="py-3 px-6 text-center text-2xl text-blue-600 font-bold">{stats.totalTestTypes}</td>
+            </tr>
+            <tr className="hover:bg-red-50">
+              <td className="py-3 px-6 text-left font-medium text-gray-800">Số lượng kết quả xét nghiệm</td>
+              <td className="py-3 px-6 text-center text-2xl text-red-600 font-bold">{stats.totalTestResults}</td>
+            </tr>
+            <tr className="hover:bg-pink-50">
+              <td className="py-3 px-6 text-left font-medium text-gray-800">Số lượng thành phần ARV</td>
+              <td className="py-3 px-6 text-center text-2xl text-pink-600 font-bold">{stats.totalARVComponents}</td>
+            </tr>
+            <tr className="hover:bg-emerald-50">
+              <td className="py-3 px-6 text-left font-medium text-gray-800">Tài khoản bệnh nhân</td>
+              <td className="py-3 px-6 text-center text-2xl text-emerald-600 font-bold">{stats.totalPatientAccounts}</td>
+            </tr>
+            <tr className="hover:bg-purple-50">
+              <td className="py-3 px-6 text-left font-medium text-gray-800">Tài khoản bác sĩ</td>
+              <td className="py-3 px-6 text-center text-2xl text-purple-600 font-bold">{stats.totalDoctorAccounts}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
   );

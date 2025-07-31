@@ -139,12 +139,11 @@ const HomePage = () => {
           <p className="text-xl mb-8">Đội ngũ bác sĩ của chúng tôi luôn sẵn sàng giúp đỡ bạn</p>
           <Link
             to="/contact-info"
-            className="bg-white text-red-600 px-8 py-6 rounded-lg font-semibold shadow-md inline-block hover:bg-gray-100 transition-colors"
+            className="bg-white text-red-600 px-12 py-6 min-w-[220px] rounded-lg font-semibold shadow-md inline-block hover:bg-gray-100 transition-colors"
           >
             <div className="mb-2">
               <span className="font-bold">Liên hệ ngay</span>
             </div>
-            <div className="text-sm text-gray-600">Nhấn để xem thông tin liên hệ</div>
           </Link>
         </div>
       </section>

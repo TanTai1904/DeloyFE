@@ -1,17 +1,20 @@
+// ...existing code...
 
-import React, { useState } from 'react';
-import { Bar } from 'react-chartjs-2';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import { Bar, Doughnut } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
   BarElement,
+  ArcElement,
   Title,
   Tooltip,
   Legend,
 } from 'chart.js';
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Title, Tooltip, Legend);
 
 function ExpandableRow({ label, value, approved, pending, cancelled }) {
   const [open, setOpen] = useState(false);
@@ -57,13 +60,30 @@ function ExpandableRow({ label, value, approved, pending, cancelled }) {
 }
 
 // Expandable row for accounts
-function AccountExpandableRow() {
+function AccountExpandableRow({ totalAccounts, totalPatients, totalDoctors, totalStaff }) {
   const [open, setOpen] = useState(false);
-  // Số liệu mẫu, thay bằng dữ liệu thực tế nếu có
-  const totalAccounts = 0;
-  const totalPatients = 0;
-  const totalDoctors = 0;
-  const totalStaff = 0;
+
+  // Dữ liệu cho doughnut 3 phần
+  const doughnutData = {
+    labels: ['Bệnh nhân', 'Bác sĩ', 'Nhân viên'],
+    datasets: [
+      {
+        data: [totalPatients, totalDoctors, totalStaff],
+        backgroundColor: ['#3b82f6', '#22c55e', '#a855f7'],
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const doughnutOptions = {
+    responsive: true,
+    plugins: {
+      legend: { position: 'bottom', labels: { font: { size: 14 } } },
+      title: { display: true, text: 'Tỉ lệ các loại tài khoản', font: { size: 16 } },
+    },
+    cutout: '60%',
+  };
+
   return (
     <>
       <tr className="hover:bg-red-50">
@@ -81,7 +101,7 @@ function AccountExpandableRow() {
       {open && (
         <tr className="bg-red-50">
           <td colSpan={3} className="px-10 pb-4 pt-2">
-            <ul className="space-y-2 text-base">
+            <ul className="space-y-2 text-base mb-4">
               <li className="flex items-center gap-2">
                 <span className="inline-block w-3 h-3 rounded-full bg-blue-500"></span>
                 <span>Bệnh nhân:</span>
@@ -105,54 +125,216 @@ function AccountExpandableRow() {
   );
 }
 
+
 const StatisticsDashboard = () => {
-  // Số liệu mẫu, bạn chỉ cần thay bằng dữ liệu API
-  // const [stats, setStats] = useState({
-  //   totalUsers: 0,
-  //   totalReports: 0,
-  //   totalSchedules: 0,
-  //   totalFeedbacks: 0,
-  // });
+  const [appointments6Months, setAppointments6Months] = useState([]);
+  // const [loadingChart, setLoadingChart] = useState(true);
+  // const [errorChart, setErrorChart] = useState(null);
 
-  // Dữ liệu mẫu cho biểu đồ
-  // Dữ liệu mẫu
-  const totalSchedules = 0;
-  const approvedSchedules = 0;
-  const pendingSchedules = 0;
-  const cancelledSchedules = 0;
+  // State cho số liệu tài khoản thực tế
+  const [totalAccounts, setTotalAccounts] = useState(0);
+  const [totalPatients, setTotalPatients] = useState(0);
+  const [totalDoctors, setTotalDoctors] = useState(0);
+  const [totalStaff, setTotalStaff] = useState(0);
 
-  const chartData = {
-    labels: ['Tài khoản', 'Lịch khám', 'Bác sĩ', 'Nhân viên'],
+  // Mock API states for articles, prescriptions, regimens, test types, test results, ARV components
+  const [totalArticles, setTotalArticles] = useState(0);
+  const [totalPrescriptions, setTotalPrescriptions] = useState(0);
+  const [totalRegimens, setTotalRegimens] = useState(0);
+  const [totalTestTypes, setTotalTestTypes] = useState(0);
+  const [totalTestResults, setTotalTestResults] = useState(0);
+  const [totalARVComponents, setTotalARVComponents] = useState(0);
+
+  // Biểu đồ tài khoản từng loại (Bar)
+  const accountBarData = {
+    labels: ['Bệnh nhân', 'Bác sĩ', 'Nhân viên'],
     datasets: [
       {
-        label: 'Tổng số',
-        data: [0, totalSchedules, 0, 0],
-        backgroundColor: 'rgba(59,130,246,0.7)', // xanh dương
-        stack: 'main',
+        label: 'Số lượng',
+        data: [totalPatients, totalDoctors, totalStaff],
+        backgroundColor: [
+          'rgba(59,130,246,0.7)', // blue
+          'rgba(34,197,94,0.7)',  // green
+          'rgba(168,85,247,0.7)', // purple
+        ],
         borderRadius: 8,
         borderWidth: 1,
       },
-      {
-        label: 'Đã duyệt',
-        data: [0, approvedSchedules, 0, 0],
-        backgroundColor: 'rgba(16,185,129,0.8)', // xanh ngọc
-        stack: 'status',
-        borderRadius: 8,
-        borderWidth: 1,
+    ],
+  };
+
+  const accountBarOptions = {
+    responsive: true,
+    plugins: {
+      legend: { display: false },
+      title: { display: true, text: 'Biểu đồ số lượng tài khoản từng loại', font: { size: 18 } },
+      tooltip: {
+        enabled: true,
+        callbacks: {
+          label: function(context) {
+            return `${context.label}: ${context.parsed.y}`;
+          }
+        }
       },
-      {
-        label: 'Chờ duyệt',
-        data: [0, pendingSchedules, 0, 0],
-        backgroundColor: 'rgba(250,204,21,0.8)', // vàng
-        stack: 'status',
-        borderRadius: 8,
-        borderWidth: 1,
+    },
+    scales: {
+      x: { grid: { display: false }, title: { display: false } },
+      y: { beginAtZero: true, ticks: { stepSize: 1 } },
+    },
+  };
+
+  // Biểu đồ Pie/Doughnut cho từng loại tài khoản
+  const pieData = [
+    {
+      label: 'Bệnh nhân',
+      data: [totalPatients, totalAccounts - totalPatients],
+      backgroundColor: ['#3b82f6', '#e5e7eb'],
+    },
+    {
+      label: 'Bác sĩ',
+      data: [totalDoctors, totalAccounts - totalDoctors],
+      backgroundColor: ['#22c55e', '#e5e7eb'],
+    },
+    {
+      label: 'Nhân viên',
+      data: [totalStaff, totalAccounts - totalStaff],
+      backgroundColor: ['#a855f7', '#e5e7eb'],
+    },
+  ];
+  const pieOptions = (title) => ({
+    responsive: true,
+    plugins: {
+      legend: { position: 'bottom', labels: { font: { size: 14 } } },
+      title: { display: true, text: title, font: { size: 16 } },
+      tooltip: {
+        callbacks: {
+          label: function(context) {
+            const label = context.label || '';
+            const value = context.parsed;
+            return `${label}: ${value}`;
+          }
+        }
       },
+    },
+    cutout: '60%',
+  });
+
+  useEffect(() => {
+    const API_URL = process.env.REACT_APP_API_URL;
+    const token = localStorage.getItem('token');
+
+    // Lấy lịch khám 6 tháng
+    const fetchAppointments = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/api/AdminDashboard/GetAppointmentsLast6Months`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setAppointments6Months(response.data.data || []);
+      } catch (err) {
+        // Không thể tải dữ liệu biểu đồ.
+      } finally {
+        // Kết thúc tải dữ liệu biểu đồ.
+      }
+    };
+
+    // Lấy tổng số tài khoản
+    const fetchAccounts = async () => {
+      try {
+        // Lấy user chính thức từ /api/User/All
+        const resUser = await axios.get(`${API_URL}/api/User/All`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const users = resUser.data.data || [];
+        const officialDoctors = users.filter(u => u.userRole === 'Doctor' && u.isVerified && u.isActive);
+        const officialStaff = users.filter(u => u.userRole === 'Staff' && u.isVerified && u.isActive);
+
+        // Lấy bệnh nhân chính thức từ /api/Patient/GetAll
+        const resPatient = await axios.get(`${API_URL}/api/Patient/GetAll`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const patients = resPatient.data.data || [];
+        const officialPatients = patients.filter(p => p.isVerified && p.isActive);
+
+        setTotalAccounts(officialPatients.length + officialDoctors.length + officialStaff.length);
+        setTotalPatients(officialPatients.length);
+        setTotalDoctors(officialDoctors.length);
+        setTotalStaff(officialStaff.length);
+      } catch (err) {
+        // Nếu lỗi thì giữ nguyên số liệu 0
+      }
+    };
+
+    fetchAppointments();
+    fetchAccounts();
+
+    // Mock API for articles
+    axios.get(`${API_URL}/api/Article/GetAll`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then(res => setTotalArticles(res.data.data?.length || 0))
+      .catch(() => setTotalArticles(0));
+
+    // Mock API for prescriptions (assuming /api/Treatment/GetAll is for prescriptions)
+    axios.get(`${API_URL}/api/Treatment/GetAll`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then(res => setTotalPrescriptions(res.data.data?.length || 0))
+      .catch(() => setTotalPrescriptions(0));
+
+    // Mock API for regimens
+    axios.get(`${API_URL}/api/ARVRegimens/GetAll`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then(res => setTotalRegimens(res.data.data?.length || 0))
+      .catch(() => setTotalRegimens(0));
+
+    // Mock API for test types
+    axios.get(`${API_URL}/api/TestType/GetAll`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then(res => setTotalTestTypes(res.data.data?.length || 0))
+      .catch(() => setTotalTestTypes(0));
+
+    // Mock API for test results
+    axios.get(`${API_URL}/api/TestResult/GetAll`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then(res => setTotalTestResults(res.data.data?.length || 0))
+      .catch(() => setTotalTestResults(0));
+
+    // Mock API for ARV components
+    axios.get(`${API_URL}/api/ARVComponents/GetAll`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then(res => setTotalARVComponents(res.data.data?.length || 0))
+      .catch(() => setTotalARVComponents(0));
+  }, []);
+
+  // Tạo nhãn tháng (6 tháng gần nhất)
+  const now = new Date();
+  const months = [];
+  for (let i = 5; i >= 0; i--) {
+    const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    months.push(`${d.getMonth() + 1}/${d.getFullYear()}`);
+  }
+
+  // Map dữ liệu API vào đúng thứ tự tháng
+  const monthToCount = {};
+  appointments6Months.forEach(item => {
+    monthToCount[item.month] = item.count;
+  });
+  const chartCounts = months.map(m => {
+    const monthNum = parseInt(m.split('/')[0], 10);
+    return monthToCount[monthNum] || 0;
+  });
+
+  const chartData = {
+    labels: months,
+    datasets: [
       {
-        label: 'Đã hủy',
-        data: [0, cancelledSchedules, 0, 0],
-        backgroundColor: 'rgba(239,68,68,0.8)', // đỏ
-        stack: 'status',
+        label: 'Lịch khám',
+        data: chartCounts,
+        backgroundColor: 'rgba(59,130,246,0.7)',
         borderRadius: 8,
         borderWidth: 1,
       },
@@ -179,16 +361,6 @@ const StatisticsDashboard = () => {
     },
   };
 
-  const listItems = [
-    'Tổng số tài khoản',
-    'Số lượng lịch khám',
-    'Số lượng bác sĩ',
-    'Số lượng nhân viên',
-    'Lịch khám đã duyệt',
-    'Lịch khám chờ duyệt',
-    'Lịch khám đã hủy',
-  ];
-
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center">
       <div className="bg-white shadow-xl rounded-lg p-10 w-full max-w-6xl">
@@ -214,47 +386,49 @@ const StatisticsDashboard = () => {
             </thead>
             <tbody>
               {/* Expandable row for accounts */}
-              <AccountExpandableRow />
-              <ExpandableRow
-                label="Số lượng lịch khám"
-                value={totalSchedules}
-                approved={approvedSchedules}
-                pending={pendingSchedules}
-                cancelled={cancelledSchedules}
+              <AccountExpandableRow
+                totalAccounts={totalAccounts}
+                totalPatients={totalPatients}
+                totalDoctors={totalDoctors}
+                totalStaff={totalStaff}
               />
+              {/* Các chỉ số khác */}
               <tr className="hover:bg-yellow-50">
                 <td className="py-3 px-6 text-left font-medium text-gray-800">Số lượng bài viết</td>
-                <td className="py-3 px-6 text-center text-2xl text-yellow-600 font-bold">0</td>
-                <td className="py-3 px-6 text-center">
-                  <button className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition-all font-semibold">Xem chi tiết</button>
-                </td>
+                <td className="py-3 px-6 text-center text-2xl text-yellow-600 font-bold">{totalArticles}</td>
+                <td className="py-3 px-6 text-center"></td>
               </tr>
               <tr className="hover:bg-indigo-50">
                 <td className="py-3 px-6 text-left font-medium text-gray-800">Số lượng đơn thuốc</td>
-                <td className="py-3 px-6 text-center text-2xl text-indigo-600 font-bold">0</td>
-                <td className="py-3 px-6 text-center">
-                  <button className="px-4 py-2 bg-indigo-500 text-white rounded hover:bg-indigo-600 transition-all font-semibold">Xem chi tiết</button>
-                </td>
+                <td className="py-3 px-6 text-center text-2xl text-indigo-600 font-bold">{totalPrescriptions}</td>
+                <td className="py-3 px-6 text-center"></td>
               </tr>
               <tr className="hover:bg-pink-50">
                 <td className="py-3 px-6 text-left font-medium text-gray-800">Số lượng phác đồ</td>
-                <td className="py-3 px-6 text-center text-2xl text-pink-600 font-bold">0</td>
-                <td className="py-3 px-6 text-center">
-                  <button className="px-4 py-2 bg-pink-500 text-white rounded hover:bg-pink-600 transition-all font-semibold">Xem chi tiết</button>
-                </td>
+                <td className="py-3 px-6 text-center text-2xl text-pink-600 font-bold">{totalRegimens}</td>
+                <td className="py-3 px-6 text-center"></td>
+              </tr>
+              <tr className="hover:bg-green-50">
+                <td className="py-3 px-6 text-left font-medium text-gray-800">Số loại xét nghiệm</td>
+                <td className="py-3 px-6 text-center text-2xl text-green-600 font-bold">{totalTestTypes}</td>
+                <td className="py-3 px-6 text-center"></td>
+              </tr>
+              <tr className="hover:bg-blue-50">
+                <td className="py-3 px-6 text-left font-medium text-gray-800">Số lượng kết quả xét nghiệm</td>
+                <td className="py-3 px-6 text-center text-2xl text-blue-600 font-bold">{totalTestResults}</td>
+                <td className="py-3 px-6 text-center"></td>
+              </tr>
+              <tr className="hover:bg-purple-50">
+                <td className="py-3 px-6 text-left font-medium text-gray-800">Số lượng thành phần ARV</td>
+                <td className="py-3 px-6 text-center text-2xl text-purple-600 font-bold">{totalARVComponents}</td>
+                <td className="py-3 px-6 text-center"></td>
               </tr>
             </tbody>
           </table>
         </div>
+
+        {/* ...bỏ biểu đồ tài khoản từng loại... */}
         {/* Danh sách các chỉ số */}
-        <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
-          <h2 className="text-lg font-semibold text-gray-700 mb-2">Danh sách các chỉ số:</h2>
-          <ul className="list-disc pl-6 text-gray-700 space-y-1">
-            {listItems.map((item, idx) => (
-              <li key={idx}>{item}</li>
-            ))}
-          </ul>
-        </div>
       </div>
     </div>
   );
