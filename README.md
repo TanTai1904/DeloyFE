@@ -1,70 +1,61 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# HIV Treatment and Medical Services System
 
-## Available Scripts
+**Phần mềm dịch vụ y tế và điều trị HIV**
 
-In the project directory, you can run:
+## Mục tiêu dự án
+Tăng cường tiếp cận dịch vụ y tế và điều trị HIV cho bệnh nhân tại các cơ sở y tế, hỗ trợ quản lý, nhắc nhở, giảm kỳ thị và nâng cao hiệu quả điều trị.
 
-### `npm start`
+## Vai trò hệ thống
+- Guest (Khách)
+- Customer (Bệnh nhân)
+- Staff (Nhân viên)
+- Doctor (Bác sĩ)
+- Manager (Quản lý)
+- Admin (Quản trị viên)
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Chức năng chính
+- Trang chủ giới thiệu cơ sở, tài liệu giáo dục, blog chia sẻ kinh nghiệm, giảm kỳ thị HIV.
+- Đăng ký lịch khám & điều trị HIV, chỉ định bác sĩ điều trị, đặt lịch ẩn danh nếu cần.
+- Tra cứu thông tin xét nghiệm (phác đồ ARV, CD4, tải lượng HIV), theo dõi lịch sử khám bệnh.
+- Nhắc nhở lịch tái khám & uống thuốc theo phác đồ điều trị.
+- Đặt lịch hẹn trực tuyến với bác sĩ, hỗ trợ tư vấn, đăng ký ẩn danh.
+- Bác sĩ lựa chọn/cá nhân hóa phác đồ ARV điều trị phù hợp từng bệnh nhân.
+- Quản lý thông tin bác sĩ: hồ sơ, bằng cấp, chuyên môn, lịch làm việc.
+- Quản lý hồ sơ người dùng, lịch sử đặt hẹn, lịch sử điều trị.
+- Dashboard & báo cáo thống kê cho từng vai trò.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Luồng nghiệp vụ chính
+1. **Đăng nhập, xác thực, phân quyền**: Người dùng đăng nhập, hệ thống xác thực và phân quyền truy cập.
+2. **Quản lý tài khoản**: Tạo, sửa, xóa, xem danh sách tài khoản (bệnh nhân, bác sĩ, nhân viên, quản lý, admin).
+3. **Đặt & quản lý lịch hẹn**: Bệnh nhân đặt lịch khám/xét nghiệm, bác sĩ duyệt và quản lý lịch hẹn.
+4. **Quản lý bài viết/tin tức**: Thêm, sửa, xóa, xem bài viết, tài liệu giáo dục, blog.
+5. **Quản lý xét nghiệm**: Quản lý loại xét nghiệm, nhập kết quả, tra cứu lịch sử xét nghiệm.
+6. **Quản lý phác đồ điều trị & thành phần ARV**: Thêm, sửa, xóa phác đồ, thành phần ARV.
+7. **Quản lý đơn thuốc/điều trị**: Bác sĩ kê đơn, nhập thông tin điều trị, quản lý lịch sử điều trị.
+8. **Thống kê, báo cáo**: Dashboard số liệu lịch hẹn, bệnh nhân, bác sĩ, xét nghiệm, bài viết, phác đồ, ...
+9. **Gửi thông báo, email**: Nhắc lịch, xác thực, quên mật khẩu, thông báo điều trị.
 
-### `npm test`
+## Công nghệ sử dụng
+- ReactJS (frontend)
+- Axios, Fetch API (giao tiếp backend)
+- React Router, React Hook Form, React Toastify, Chart.js, TailwindCSS
+- Backend: .NET Core (API RESTful)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Hướng dẫn cài đặt & chạy dự án
+1. Clone project về máy
+2. Cài đặt dependencies:
+   ```bash
+   npm install
+   ```
+3. Tạo file `.env` và cấu hình biến `REACT_APP_API_URL` trỏ về backend
+4. Chạy dự án:
+   ```bash
+   npm start
+   ```
+5. Truy cập [http://localhost:3000](http://localhost:3000)
 
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## Thông tin thêm
+- Mọi chức năng đều có kiểm tra phân quyền, xác thực token.
+- Giao diện hiện đại, responsive, thân thiện với người dùng.
+- Dễ dàng mở rộng, tích hợp thêm các dịch vụ y tế khác.
