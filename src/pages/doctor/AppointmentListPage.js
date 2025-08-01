@@ -36,21 +36,37 @@ const AppointmentListPage = () => {
         fetchAppointments();
     }, []);
 
+    // Hàm lấy danh sách lịch hẹn của bệnh nhân
+    // API: GET /api/Appointment/GetByPatientId/{patientId}
+    // - Lấy token từ localStorage (hàm getToken)
+    // - Kiểm tra token hết hạn (isTokenExpired), nếu hết hạn thì gọi handleUnauthorized để logout
+    // - Lấy userDetails từ localStorage, lấy patientId
+    // - Nếu không có patientId thì báo lỗi
+    // - Gọi API lấy danh sách lịch hẹn của bệnh nhân hiện tại
+    // - Nếu thành công: setAppointments (cập nhật state danh sách lịch hẹn)
+    // - Nếu thất bại: setError (hiển thị lỗi)
+    // - Luôn setLoading(false) khi xong
     const fetchAppointments = async () => {
         try {
+            // Lấy token xác thực
             const token = getToken();
             if (!token || isTokenExpired(token)) {
+                // Nếu token hết hạn hoặc không có, logout
                 handleUnauthorized();
                 return;
             }
 
+            // Lấy thông tin user từ localStorage
             const userDetails = JSON.parse(localStorage.getItem('userDetails'));
             
+            // Nếu không có patientId thì báo lỗi
             if (!userDetails?.patientId) {
                 setError('Không thể tải thông tin lịch hẹn. Vui lòng đăng nhập lại.');
                 return;
             }
 
+            // Gọi API lấy danh sách lịch hẹn của bệnh nhân
+            // API: GET /api/Appointment/GetByPatientId/{patientId}
             const response = await axios.get(
                 `${API_URL}/api/Appointment/GetByPatientId/${userDetails.patientId}`,
                 {
@@ -60,19 +76,23 @@ const AppointmentListPage = () => {
                 }
             );
 
+            // Nếu gọi API thành công, cập nhật state
             if (response.data.status) {
                 setAppointments(response.data.data);
             } else {
                 setError('Không thể tải danh sách lịch hẹn');
             }
         } catch (error) {
+            // Xử lý lỗi khi gọi API
             console.error('Error fetching appointments:', error);
             if (error.response?.status === 401) {
+                // Nếu lỗi 401 thì logout
                 handleUnauthorized();
             } else {
                 setError('Đã xảy ra lỗi khi tải danh sách lịch hẹn');
             }
         } finally {
+            // Luôn tắt loading khi xong
             setLoading(false);
         }
     };
